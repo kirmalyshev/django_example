@@ -1,0 +1,16 @@
+<table>
+    <tr><th>поле</th><th>старое значение</th><th>новое значение</th></tr>
+    {% for field, values in changes.items %}
+    <tr class="changes_row">
+        <td>{{ field }}</td>
+        <td>
+            <span class="old_value_source">{{ values.0 }}</span>
+            <span class="old_value_processed"></span>
+        </td>
+        <td>
+            <span class="new_value_source">{{ values.1 }}</span>
+            <span class="new_value_processed"></span>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

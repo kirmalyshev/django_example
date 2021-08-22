@@ -1,0 +1,74 @@
+# This file is a template, and might need editing before it works on your project.
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python
+image: python:latest
+
+# Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
+services:
+  - redis:latest
+  - postgres:latest
+
+variables:
+  TEST_POSTGRES_DB: test_django_example_db
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  POSTGRES_HOST_AUTH_METHOD: trust
+
+  GCM_DEFAULT_APPLICATION_ID: django_example_android_test
+  APNS_DEFAULT_APPLICATION_ID: django_example_ios_test
+  DB_HOST: postgres
+  DB_PORT: 5432
+  DB_NAME: test_django_example_db
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+
+  # Features
+  FEATURE__IS_REVIEWS_ENABLED: 1
+  FEATURE__IS_RELATED_PATIENTS_ENABLED: 1
+  FEATURE__DJANGO_ADMIN__CAN_GENERATE_DOCTOR_TIMESLOTS: 1
+  FEATURE__WAY_TO_SEE_DOCTORS_IN_APP: just_list
+
+  THROTTLE__GET_TOKEN_OR_REGISTER: 500/min
+  THROTTLE__CREATE_APPOINTMENT_REQUEST: 500/min
+  THROTTLE__SIMPLE_CONFIRM_PHONE: 100/min
+  THROTTLE__CREATE_SUPPORT_REQUEST: 100/min
+
+# This folder is cached between builds
+# http://docs.gitlab.com/ee/ci/yaml/README.html#cache
+cache:
+  paths:
+    - ~/.cache/pip/
+
+# This is a basic example for a gem or script which doesn't use
+# services such as redis or postgres
+before_script:
+  - python -V  # Print out python version for debugging
+  # Uncomment next line if your Django app needs a JS runtime:
+  # - apt-get update -q && apt-get install nodejs -yqq
+  - pip install -r req_dev.txt
+  - pip install -r requirements.txt
+  - mkdir test_media
+
+# To get Django tests to work you may need to create a settings file using
+# the following DATABASES:
+#
+# DATABASES = {
+#     'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'ci',
+#        'USER': 'postgres',
+#        'PASSWORD': 'postgres',
+#        'HOST': 'postgres',
+#        'PORT': '5432',
+#    },
+# }
+#
+# and then adding `--settings app.settings.ci` (or similar) to the test command
+
+test:
+#  variables:
+#    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+  script:
+    - python manage.py test

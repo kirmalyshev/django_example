@@ -1,0 +1,10 @@
+FCM = "FCM"
+GCM = "GCM"
+APNS = "APNS"
+
+PAYLOAD = "payload"
+TARGET_SCREEN = "target_screen"
+EXTRA = "extra"
+TITLE = "title"
+BODY = "body"
+NOTIFICATION = "notification"

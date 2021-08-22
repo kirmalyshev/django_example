@@ -1,0 +1,63 @@
+version: '3.7'
+# staging
+
+services:
+
+  db:
+    image: postgres:12.2
+    ports:
+      - "127.0.0.1:5434:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+  redis:
+    image: redis:6.0.5
+    expose:
+      - 6379
+    ports:
+      - "127.0.0.1:6379:6379"
+    entrypoint: redis-server
+    restart: always
+
+  web:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile
+    volumes:
+      - ./static:/django_example/static
+      - ./media:/django_example/media
+    env_file:
+      - envs/staging.env
+    command: python manage.py runserver 0.0.0.0:8000 --noreload
+    restart: always
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    links:
+      - redis
+      - db
+      - mailhog
+    depends_on:
+      - redis
+      - db
+#    log_driver: "gelf"
+#    log_opt:
+#      gelf-address: "udp://localhost:12201"
+#      gelf-tag: "logs-web"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
+    expose:
+      - 8025
+      - 1025
+
+  flower:
+    image: mher/flower
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/2
+      FLOWER_PORT: 8888
+    ports:
+      - 8888:8888

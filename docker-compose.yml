@@ -1,0 +1,58 @@
+version: '3.7'
+# dev
+
+services:
+  db:
+    image: postgres:12.2
+    ports:
+      - "127.0.0.1:5434:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+    volumes:
+      - ./develop-eggs:/develop-eggs
+
+  redis:
+    image: redis:6.0.5
+    expose:
+      - 6379
+    ports:
+      - "127.0.0.1:6379:6379"
+    entrypoint: redis-server
+    # command: redis-server --requirepass yoyoyo
+
+  web:
+    build:
+      context: .
+      dockerfile: dockerfiles/dev.Dockerfile
+    volumes:
+      - .:/django_example
+    env_file:
+      - envs/dev.env
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    links:
+      - redis
+      - db
+    depends_on:
+      - redis
+      - db
+
+  flower:
+    image: mher/flower
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/2
+      FLOWER_PORT: 8888
+    ports:
+      - 8888:8888
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
+    expose:
+      - 8025
+      - 1025

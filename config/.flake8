@@ -1,0 +1,4 @@
+[flake8]
+exclude = .git,__pycache__,flatpages_i18n,migrations,manage.py,var,tests
+ignore = A003,D100,D105,D106,D107,W503,D401
+max-line-length = 100

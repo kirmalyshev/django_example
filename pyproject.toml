@@ -1,0 +1,30 @@
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+skip-string-normalization = 'True'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv | \venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | migrations
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 100
+skip = ['develop-eggs', 'migrations']
+sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'COMMON', 'FIRSTPARTY', 'LOCALFOLDER']
+force_single_line = false

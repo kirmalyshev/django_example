@@ -17,14 +17,14 @@ make project_reset
 ### 2 Обновить `/etc/hosts`
 добавить в `/etc/hosts` запись:
 ```
-127.0.0.1  clinic.localhost
+127.0.0.1  example.localhost
 ```
 
 ### 3 Зайти в админку
 ```
-http://clinic.localhost:8000/admin/
+http://example.localhost:8000/admin/
 ```
-Логин `admin@django_exapmle.ru`, пароль `123321`.
+Логин `admin@django_example.ru`, пароль `123321`.
 
 
 Useful commands
